@@ -26,11 +26,13 @@ async function run() {
     await client.connect();
 
     // get available appointments to the client
-    const availableAppointmentCollection = client
-      .db("doctors-portal-again")
-      .collection("available-appointments");
+    const db = client.db("doctors-portal-again");
+    const availableAppointmentCollection = db.collection(
+      "available-appointments"
+    );
+    const bookingsCollection = db.collection("bookings");
 
-    // handle /appointments request
+    // handle /appointments get request
     app.get("/appointments", async (req, res) => {
       const query = {};
       const appointments = await availableAppointmentCollection
@@ -38,6 +40,15 @@ async function run() {
         .toArray();
       res.send(appointments);
       console.log(appointments);
+    });
+
+    // handle bookings api requests
+
+    // handle bookings post request
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+      const result = await bookingsCollection.insertOne(booking);
+      res.send(result);
     });
   } catch (error) {
     console.log(error);
