@@ -14,17 +14,40 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
-// client.connect((err) => {
-//   const collection = client.db("test").collection("devices");
-//   // perform actions on the collection object
-//   client.close();
-// });
 
-console.log(uri);
 app.get("/", async (req, res) => {
   res.send("Doctors portal server is running now");
 });
 
+// node run function all server requests handle here
+async function run() {
+  try {
+    // connect mongodb with node server
+    await client.connect();
+
+    // get available appointments to the client
+    const availableAppointmentCollection = client
+      .db("doctors-portal-again")
+      .collection("available-appointments");
+
+    // handle /appointments request
+    app.get("/appointments", async (req, res) => {
+      const query = {};
+      const appointments = await availableAppointmentCollection
+        .find(query)
+        .toArray();
+      res.send(appointments);
+      console.log(appointments);
+    });
+  } catch (error) {
+    console.log(error);
+  } finally {
+    // await client.close();
+  }
+}
+run().catch(console.dir);
+
+// listen app
 app.listen(PORT, () => {
   console.log(`node server is running at PORT:${PORT}`);
 });
