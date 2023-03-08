@@ -49,6 +49,7 @@ async function run() {
     );
     const bookingsCollection = db.collection("bookings");
     const usersCollection = db.collection("users");
+    const doctorsCollection = db.collection("doctors");
 
     // handle /appointments get request
     app.get("/appointments", async (req, res) => {
@@ -175,6 +176,13 @@ async function run() {
       const query = { email };
       const user = await usersCollection.findOne(query);
       res.send({ isAdmin: user?.role === "admin" });
+    });
+
+    // add doctors to database
+    app.post("/doctors", async (req, res) => {
+      const doctor = req.body;
+      const result = await doctorsCollection.insertOne(doctor);
+      res.send(result);
     });
   } catch (error) {
     console.log(error);
