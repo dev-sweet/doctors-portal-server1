@@ -138,7 +138,6 @@ async function run() {
     // handle users post requests
     app.post("/users", async (req, res) => {
       const user = req.body;
-      console.log(user);
       const result = await usersCollection.insertOne(user);
       res.send(result);
     });
@@ -184,10 +183,21 @@ async function run() {
       const result = await doctorsCollection.find(query).toArray();
       res.send(result);
     });
+
     // add doctors to database
     app.post("/doctors", async (req, res) => {
       const doctor = req.body;
       const result = await doctorsCollection.insertOne(doctor);
+      res.send(result);
+    });
+
+    // delete doctors from database
+    app.delete("/doctors/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const query = { _id: ObjectId(id) };
+      const result = await doctorsCollection.deleteOne(query);
+      console.log(result);
       res.send(result);
     });
   } catch (error) {
