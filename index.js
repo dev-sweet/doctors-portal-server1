@@ -178,6 +178,12 @@ async function run() {
       res.send({ isAdmin: user?.role === "admin" });
     });
 
+    // get doctors from database
+    app.get("/doctors", async (req, res) => {
+      const query = {};
+      const result = await doctorsCollection.find(query).toArray();
+      res.send(result);
+    });
     // add doctors to database
     app.post("/doctors", async (req, res) => {
       const doctor = req.body;
